@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- 玻璃圆角方片 -->
+    <path
+        android:pathData="M38,30 h32 a14,14 0 0 1 14,14 v20 a14,14 0 0 1 -14,14 h-32 a14,14 0 0 1 -14,-14 v-20 a14,14 0 0 1 14,-14 z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="30"
+                android:startY="30"
+                android:endX="78"
+                android:endY="78">
+                <item android:offset="0" android:color="#59FFFFFF" />
+                <item android:offset="1" android:color="#1FFFFFFF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- 玻璃描边 -->
+    <path
+        android:pathData="M38,30 h32 a14,14 0 0 1 14,14 v20 a14,14 0 0 1 -14,14 h-32 a14,14 0 0 1 -14,-14 v-20 a14,14 0 0 1 14,-14 z"
+        android:strokeColor="#CCFFFFFF"
+        android:strokeWidth="3"
+        android:fillColor="#00000000" />
+    <!-- 顶部高光 -->
+    <path
+        android:pathData="M40,34 h28 a10,10 0 0 1 9,6 a10,10 0 0 0 -9,-4 h-28 a10,10 0 0 0 -9,4 a10,10 0 0 1 9,-6 z"
+        android:fillColor="#99FFFFFF" />
+    <!-- 播放三角 -->
+    <path
+        android:pathData="M47,42 L47,66 L67,54 z"
+        android:fillColor="#FFFFFFFF" />
+    <!-- 右下角下载箭头 -->
+    <path
+        android:pathData="M74,68 h5 v9 h4 l-6.5,8 l-6.5,-8 h4 z"
+        android:fillColor="#FF7FF0FF" />
+</vector>

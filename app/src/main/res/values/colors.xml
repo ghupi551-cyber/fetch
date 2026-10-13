@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 启动窗口背景：必须和 App 里的基础底色一致，否则冷启动会闪一下别的颜色 -->
+    <color name="app_background">#FFF2F3F8</color>
+    <color name="ic_launcher_background">#FF12123A</color>
+</resources>

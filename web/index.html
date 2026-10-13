@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>视频链接提取 · 下载</title>
+<meta name="description" content="粘贴视频链接，提取可直接播放/下载的视频地址。支持抖音、B 站、YouTube 等 1800+ 站点。" />
+<style>
+  :root {
+    --text: #111214;
+    --dim: #6b7280;
+    --line: #e8eaee;
+    --bg: #ffffff;
+    --accent: #1a6cff;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", Roboto, sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 0 20px 80px; }
+
+  /* ---------- 顶部 ---------- */
+  header { padding: 56px 0 34px; text-align: center; }
+  .icon { width: 84px; height: 84px; display: block; margin: 0 auto 20px; border-radius: 20px; }
+  h1 { font-size: 27px; margin: 0 0 10px; letter-spacing: 0.2px; }
+  .sub { color: var(--dim); margin: 0 0 26px; font-size: 15px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 9px;
+    padding: 15px 34px; border-radius: 14px;
+    background: var(--accent); color: #fff; text-decoration: none;
+    font-weight: 600; font-size: 16px;
+    box-shadow: 0 6px 18px rgba(26, 108, 255, 0.28);
+    transition: transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active { transform: scale(.97); box-shadow: 0 3px 10px rgba(26,108,255,.24); }
+  .btn svg { width: 19px; height: 19px; }
+  .meta { margin-top: 18px; font-size: 12.5px; color: var(--dim); }
+  .meta span { display: inline-block; margin: 0 7px 6px; }
+  .hash { display: block; margin-top: 6px; font-size: 11px; color: #9aa0aa; word-break: break-all; }
+
+  /* ---------- 分区标题 ---------- */
+  h2 {
+    font-size: 13px; font-weight: 600; letter-spacing: 1.4px;
+    color: var(--dim); text-transform: uppercase;
+    margin: 46px 0 18px;
+  }
+
+  /* ---------- 翻卡片 ---------- */
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px rgba(17, 18, 20, .04);
+    /* 初始状态：卡片立着，等滚动翻过来 */
+    transform: perspective(900px) rotateY(-78deg) translateX(26px);
+    transform-origin: left center;
+    opacity: 0;
+    transition: transform .62s cubic-bezier(.22, .9, .28, 1), opacity .42s ease;
+    will-change: transform, opacity;
+  }
+  .card.in { transform: perspective(900px) rotateY(0deg) translateX(0); opacity: 1; }
+  .card h3 { margin: 0 0 6px; font-size: 15.5px; display: flex; align-items: center; gap: 9px; }
+  .card h3 .emoji { font-size: 18px; }
+  .card p { margin: 0; color: var(--dim); font-size: 14px; }
+
+  /* ---------- 步骤 ---------- */
+  ol.steps { list-style: none; counter-reset: s; padding: 0; margin: 0; }
+  ol.steps li {
+    counter-increment: s; position: relative; padding-left: 42px;
+    margin-bottom: 12px; font-size: 14.5px;
+  }
+  ol.steps li::before {
+    content: counter(s); position: absolute; left: 0; top: 1px;
+    width: 27px; height: 27px; border-radius: 50%;
+    border: 1.5px solid var(--accent); color: var(--accent);
+    font-size: 13px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ---------- 列表 ---------- */
+  ul.plain { margin: 0; padding-left: 20px; color: var(--dim); font-size: 14px; }
+  ul.plain li { margin-bottom: 8px; }
+  ul.plain b { color: var(--text); }
+  .yes { color: #16a34a; font-weight: 600; }
+
+  footer {
+    margin-top: 52px; padding-top: 22px;
+    border-top: 1px solid var(--line);
+    color: #9aa0aa; font-size: 12px; text-align: center; line-height: 1.9;
+  }
+  footer a { color: var(--dim); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card { transform: none; opacity: 1; transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <svg class="icon" viewBox="0 0 108 108" xmlns="http://www.w3.org/2000/svg" aria-label="应用图标">
+      <defs>
+        <linearGradient id="g" x1="6" y1="0" x2="102" y2="108" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stop-color="#2B1B69" /><stop offset="0.45" stop-color="#5B31C4" /><stop offset="1" stop-color="#0E8FA8" />
+        </linearGradient>
+        <clipPath id="r"><rect width="108" height="108" rx="24" /></clipPath>
+      </defs>
+      <g clip-path="url(#r)">
+        <rect width="108" height="108" fill="url(#g)" />
+        <rect x="24" y="30" width="60" height="48" rx="14" fill="#FFFFFF" fill-opacity="0.22"
+              stroke="#FFFFFF" stroke-opacity="0.85" stroke-width="3" />
+        <path d="M47,42 L47,66 L67,54 z" fill="#FFFFFF" />
+        <path d="M74,68 h5 v9 h4 l-6.5,8 l-6.5,-8 h4 z" fill="#7FF0FF" />
+      </g>
+    </svg>
+
+    <h1>视频链接提取</h1>
+    <p class="sub">粘贴链接，提取可直接播放 / 下载的视频地址</p>
+
+    <a class="btn" href="VideoLinkGlass-1.8.0.apk" download>
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19,9h-4V3H9v6H5l7,7 7,-7zM5,18v2h14v-2H5z"/></svg>
+      下载 APK
+    </a>
+
+    <div class="meta">
+      <span>版本 <b>1.8.0</b></span>
+      <span>27.2 MB</span>
+      <span>Android 8.0+ / arm64</span>
+      <span class="hash">SHA-256 c558bb5c9ceb569f383d550bd12a7269de41ebbd374c700bbd57b49673372dc1</span>
+    </div>
+  </header>
+
+  <h2>功能</h2>
+
+  <div class="card">
+    <h3><span class="emoji">🔗</span>一键提取</h3>
+    <p>粘贴视频链接就能拿到可直接播放、可直接下载的地址，不用再去翻网页源码。</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="emoji">🌐</span>支持 1800+ 站点</h3>
+    <p>抖音（无水印）、B 站、YouTube、TikTok、Instagram、X 等主流站点都能解析。</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="emoji">🎞️</span>画质与帧率一目了然</h3>
+    <p>列出每个格式的分辨率、帧率与文件体积，自动把最优的那一条放在最前面。</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="emoji">⬇️</span>带进度的下载</h3>
+    <p>在应用内下载，实时显示百分比、速度与已下载大小，支持取消和重试。</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="emoji">🖼️</span>图文作品也能看</h3>
+    <p>抖音图集可以左右滑动、双指缩放查看，支持一键下载全部图片。</p>
+  </div>
+
+  <div class="card">
+    <h3><span class="emoji">🔄</span>自动检查更新</h3>
+    <p>每次启动自动检查新版本，发现更新可一键在应用内下载并安装。</p>
+  </div>
+
+  <h2>安装</h2>
+  <ol class="steps">
+    <li>点上面的「下载 APK」，等下载完成。</li>
+    <li>在文件管理器里打开它，系统提示「未知来源」时选择允许。</li>
+    <li>打开应用，粘贴视频链接，点「提取视频」。</li>
+  </ol>
+
+  <h2>安全与隐私</h2>
+  <div class="card">
+    <ul class="plain">
+      <li>只申请 4 个权限：<b>网络、网络状态、震动</b>，以及仅对 Android 9 以下生效的存储权限。</li>
+      <li>不含任何统计 / 上报 SDK：<span class="yes">友盟、穿山甲、Firebase、Sentry、Bugly、AdMob 等全都没有</span>。</li>
+      <li>只在你点「下载」时才保存文件，存到手机 <b>下载/视频链接提取</b>，不会后台上传你的视频。</li>
+      <li>历史记录只存在本机；解析只访问你粘贴的那个链接所在的站点。</li>
+    </ul>
+  </div>
+
+  <h2>更新日志</h2>
+  <div class="card">
+    <h3>1.8.0</h3>
+    <p>新增自动更新：启动自动检查、应用内下载、直接拉起系统安装。</p>
+  </div>
+  <div class="card">
+    <h3>1.7.0</h3>
+    <p>默认浅色主题；深色改为纯黑；展开收起改用下拉箭头；检查更新改成一键。</p>
+  </div>
+  <div class="card">
+    <h3>1.6.0</h3>
+    <p>图文作品不再显示播放键、图片查看器加页码；启动不再闪现图标。</p>
+  </div>
+
+  <footer>
+    <p>解析与下载全部在本机完成，不经过任何第三方服务器。</p>
+    <p>界面基于 <a href="https://github.com/Kyant0/AndroidLiquidGlass" target="_blank" rel="noopener">AndroidLiquidGlass</a>（Apache-2.0），解析引擎使用 yt-dlp（Unlicense）。</p>
+  </footer>
+
+</div>
+
+<script>
+  // 往下滑时卡片像翻牌一样转进来
+  (function () {
+    var cards = document.querySelectorAll('.card');
+    if (!('IntersectionObserver' in window)) {
+      cards.forEach(function (c) { c.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var el = entry.target;
+        var siblings = Array.prototype.slice.call(el.parentNode.children);
+        var index = siblings.indexOf(el) % 3;
+        el.style.transitionDelay = (index * 70) + 'ms';
+        el.classList.add('in');
+        io.unobserve(el);
+      });
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' });
+
+    cards.forEach(function (c) { io.observe(c); });
+  })();
+</script>
+</body>
+</html>
