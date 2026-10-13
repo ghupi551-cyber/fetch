@@ -133,14 +133,3 @@ app/src/main/java/com/dsh/videolink/
 - [youtubedl-android](https://github.com/yausername/youtubedl-android)（GPL-3.0）—— yt-dlp 的 Android 封装
 - [parse-video](https://github.com/wujunwei928/parse-video)（MIT）—— 抖音解析思路
 
-## 发布到 GitHub（手机上也能做）
-
-1. 手机浏览器打开 `github.com`，注册 / 登录，右上角 **+ → New repository**，
-   名字填 `fetch`，选 **Public**，Create。
-2. 进入仓库 → **uploading an existing file** → 把源码包解压后的文件
-   （`app/`、`web/`、`gradle/`、`build.gradle.kts`、`settings.gradle.kts`、`gradle.properties`、
-   `README.md`、`LICENSE`、`THIRD_PARTY_NOTICES.md`、`.gitignore`）全部上传 → Commit。
-3. 回仓库首页 → 右侧 **Releases → Create a new release** → Tag 填 `v5.0.0`，
-   标题 `Fetch 5.0.0`，把 APK 拖到附件区 → Publish release。
-
-> 因为链接了 GPL-3.0 的组件，仓库公开（含源码）即满足许可证要求。
